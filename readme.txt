@@ -3,7 +3,7 @@ Contributors: megainfo
 Tags: buddypress, activity, wall, facebook, facebook style, facebook comment system, wall mode, like, unlike
 Requires at least: WordPress 3.4, BuddyPress 1.5
 Tested up to: WordPress 3.5.1 / BuddyPress 1.8
-Stable tag: 0.8
+Stable tag: 0.8.1
 
 
 == Description ==
