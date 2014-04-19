@@ -42,7 +42,7 @@ function bp_wall_add_css() {
 	global $bp;
 
     if( !is_user_logged_in() )
-        return ;//we do not want to include the js
+        return ;//we do not want to include the css
 	
 	if ( !bp_wall_is_bp_default() )
 		wp_enqueue_style( 'bp-wall-css', plugins_url( 'css/bp-wall.css' ,  __FILE__ ), array('bp-legacy-css') ); 

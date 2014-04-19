@@ -4,9 +4,9 @@ Plugin Name: BuddyPress Wall
 Plugin URI: 
 Description: Turn your Buddypress Activity Component to a Facebook-style Wall.
 Profiles with Facebook-style walls
-Version: 0.9.1
+Version: 0.9.2
 Requires at least:  WP 3.4, BuddyPress 1.5
-Tested up to: BuddyPress 1.9
+Tested up to: Wordpress 3.9 BuddyPress 2.0
 License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Author: Meg@Info
 Author URI: http://www.ibuddypress.net
@@ -17,7 +17,7 @@ Network: true
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /*************************************************************************************************************
- --- BuddyPress Wall 0.9.1 ---
+ --- BuddyPress Wall 0.9.2 ---
  *************************************************************************************************************/
 
 // Define a constant that can be checked to see if the component is installed or not.
@@ -25,7 +25,7 @@ define( 'BP_WALL_IS_INSTALLED', 1 );
 
 // Define a constant that will hold the current version number of the component
 // This can be useful if you need to run update scripts or do compatibility checks in the future
-define( 'BP_WALL_VERSION', '0.9.1' );
+define( 'BP_WALL_VERSION', '0.9.2' );
 
 // Define a constant that we can use to construct file paths throughout the component
 define( 'BP_WALL_PLUGIN_DIR', dirname( __FILE__ ) );
@@ -38,9 +38,89 @@ define( 'BP_WALL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 define ( 'BP_WALL_DB_VERSION', '1.0' );
 
+// Define a constant that we can use as plugin basename
+define( 'BP_WALL_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
+
+
+
+/**
+ * Check the config for multisite and activity streams component
+ */
+function bp_wall_check_config() {
+	global $bp;
+
+	$config = array(
+		'blog_status'    => false, 
+		'network_active' => false, 
+		'network_status' => true 
+	);
+	if ( get_current_blog_id() == bp_get_root_blog_id() ) {
+		$config['blog_status'] = true;
+	}
+	
+	$network_plugins = get_site_option( 'active_sitewide_plugins', array() );
+
+	// No Network plugins
+	if ( empty( $network_plugins ) )
+
+	// Looking for BuddyPress and bp-activity plugin
+	$check[] = $bp->basename;
+	$check[] = BP_WALL_PLUGIN_BASENAME;
+
+	// Are they active on the network ?
+	$network_active = array_diff( $check, array_keys( $network_plugins ) );
+	
+	// If result is 1, your plugin is network activated
+	// and not BuddyPress or vice & versa. Config is not ok
+	if ( count( $network_active ) == 1 )
+		$config['network_status'] = false;
+
+	// We need to know if the plugin is network activated to choose the right
+	// notice ( admin or network_admin ) to display the warning message.
+	$config['network_active'] = isset( $network_plugins[ BP_WALL_PLUGIN_BASENAME ] );
+
+	// if BuddyPress config is different than bp-activity plugin or Activity component is disabled
+	if ( !$config['blog_status'] || !$config['network_status'] || !bp_is_active( 'activity' ) ) {
+
+		$warnings = array();
+
+		if ( !bp_core_do_network_admin() && !$config['blog_status'] ) {
+			$warnings[] = __( 'Buddypress Activity Streams Component requires to be activated.', 'bp-wall' );
+		}
+
+		if ( !bp_core_do_network_admin() && !$config['blog_status'] ) {
+			$warnings[] = __( 'Buddypress Wall requires to be activated on the blog where BuddyPress is activated.', 'bp-wall' );
+		}
+
+		if ( bp_core_do_network_admin() && !$config['network_status'] ) {
+			$warnings[] = __( 'Buddypress Wall and BuddyPress need to share the same network configuration.', 'bp-wall' );
+		}
+
+		if ( ! empty( $warnings ) ) :
+		?>
+		<div id="message" class="error">
+			<?php foreach ( $warnings as $warning ) : ?>
+				<p><?php echo esc_html( $warning ) ; ?></p>
+			<?php endforeach ; ?>
+		</div>
+		<?php
+		endif;
+
+		// Display a warning message in network admin or admin
+		add_action( $config['network_active'] ? 'network_admin_notices' : 'admin_notices', $warning );
+		
+		return false;
+	} 
+	return true;
+}
+
+
 /* Only load the component if BuddyPress is loaded and initialized. */
 function bp_wall_init() {
-	require( dirname( __FILE__ ) . '/includes/bp-wall-loader.php' );
+	//only load the plugin if check config return true
+	if( bp_wall_check_config() )
+		require( dirname( __FILE__ ) . '/includes/bp-wall-loader.php' );
+
 }
 add_action( 'bp_include', 'bp_wall_init' );
 
@@ -51,7 +131,7 @@ function bp_wall_activate() {
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	if ( !is_plugin_active( 'buddypress/bp-loader.php' ) ) {
 		//deactivate_plugins( basename( __FILE__ ) ); // Deactivate this plugin
-		die( _e( 'You cannot enable BuddyPress Wall <strong>BuddyPress</strong> is not active. Please install and activate BuddyPress before trying to activate Buddypress Wall.' , 'bp-wall' ) );
+		die( _e( 'You cannot enable BuddyPress Wall, <strong>BuddyPress</strong> is not active. Please install and activate BuddyPress before trying to activate Buddypress Wall.' , 'bp-wall' ) );
 	}	
 
 	// Add the transient to redirect

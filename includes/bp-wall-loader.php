@@ -238,8 +238,12 @@ class BP_Wall {
 	 */
 	function is_myfriend( $user_id ) {
 		global $bp;
-		$bp_loggedin_user_id = bp_loggedin_user_id();
 
+		// check if Friend Connections component is enabled
+		if ( !bp_is_active( 'friends' ) ) 
+			return true;
+
+		$bp_loggedin_user_id = bp_loggedin_user_id();
 		return friends_check_friendship( $bp_loggedin_user_id, $user_id );
 	}
 	
@@ -291,6 +295,7 @@ class BP_Wall {
 		return $activity_list;
 
 	}
+
 	/**
 	 * Get the news feed activites ( friends + groups + mentions )
 	 */
@@ -304,17 +309,23 @@ class BP_Wall {
 		$user_id = $bp->displayed_user->id;
 		$filter = $bp->displayed_user->domain;
 
-		$friends_ids = friends_get_friend_user_ids( $user_id );
-		if ( empty( $friends_ids ) )
-			$friends_ids = null;
-		else 
-			$friends_ids = implode( ',', wp_parse_id_list( $friends_ids ) );
+		// check if friends compnent is enabled
+		if ( bp_is_active( 'friends' ) ) {
+			$friends_ids = friends_get_friend_user_ids( $user_id );
+			if ( empty( $friends_ids ) )
+				$friends_ids = null;
+			else 
+				$friends_ids = implode( ',', wp_parse_id_list( $friends_ids ) );
+	  	}
 
-		$groups_ids = groups_get_user_groups( $user_id );
-		if ( empty( $groups_ids['groups'] ) )
-			$groups_ids = null;
-		else
-			$groups_ids = implode( ',', wp_parse_id_list( $groups_ids['groups'] ) );
+	  	// check if groups compnent is enabled
+        if ( bp_is_active( 'groups' ) ) {
+			$groups_ids = groups_get_user_groups( $user_id );
+			if ( empty( $groups_ids['groups'] ) )
+				$groups_ids = null;
+			else
+				$groups_ids = implode( ',', wp_parse_id_list( $groups_ids['groups'] ) );
+        }
 
  		$table_activity = $bp->activity->table_name; 
 		$table_activity_meta = $bp->activity->table_name_meta;
@@ -325,6 +336,7 @@ class BP_Wall {
 		$where_conditions = array();
 		if( isset( $friends_ids ) )
 			$where_conditions['friends_sql'] = "( $table_activity.user_id IN ( $friends_ids ) AND $table_activity.type!='activity_comment' )";
+		
 		//$where_conditions['friends_sql'] = "( $table_activity_meta.meta_value LIKE '%$filter%' AND $table_activity.type!='activity_comment' )";
 		if( isset( $groups_ids ) )
 			$where_conditions['groups_sql'] = "( $table_activity.user_id != $user_id AND $table_activity.item_id IN ( $groups_ids ) AND $table_activity.component = 'groups' )";

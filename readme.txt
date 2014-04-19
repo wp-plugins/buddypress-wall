@@ -2,8 +2,8 @@
 Contributors: megainfo
 Tags: buddypress, activity, wall, facebook, facebook style, facebook comment system, wall mode, like, unlike
 Requires at least: WordPress 3.4, BuddyPress 1.5
-Tested up to: WordPress 3.8 / BuddyPress 1.9
-Stable tag: 0.9.1
+Tested up to: WordPress 3.9 / BuddyPress 2.0
+Stable tag: 0.9.2
 
 
 == Description ==
@@ -80,6 +80,11 @@ For bug reports or to add patches or translation files, visit the [Buddypress Wa
 
 
 == Changelog ==
+= 0.9.2 =
+* Work on Multisites Network.
+* Fix bug : notification tab not show on member page.
+* Fix bug when friends and/or groups component is/are disabled.
+
 = 0.9.1 =
 * Remove debug messages.
 
