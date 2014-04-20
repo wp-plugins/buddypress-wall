@@ -22,7 +22,7 @@ add_filter('bp_get_activity_action_pre_meta', 'bp_wall_get_activity_action_pre_m
 
 function bp_wall_get_activity_action_pre_meta( $action, $activity, $args ){
 	$bp_wall_action = bp_activity_get_meta( $activity->id, 'bp_wall_action' );
-	if ( isset($bp_wall_action) ) {
+	if ( isset($bp_wall_action) && !empty($bp_wall_action) ) {
 		 $action = $bp_wall_action;
 	}
 
@@ -55,11 +55,14 @@ function bp_wall_input_filter( &$activity ) {
 	$new_action = false;
 
 	// If we're on an activity page (loggedin_user's own profile or a friends), check for a target ID
-	if ( $bp->current_action == 'just-me' && ( !isset($displayed_user->id) || $displayed_user->id == 0 ) ) return;
+	if ( $bp->current_action == 'just-me' && 
+		( !isset($displayed_user->id) || 
+		$displayed_user->id == 0 ) ) return;
 
 	// It's either an @ mention, status update, or forum post.
-	if ( ($bp->current_action == 'just-me' && $loggedin_user->id == $displayed_user->id) || $bp->current_action == 'forum' )
-	{
+	if ( ( $bp->current_action == 'just-me' && 
+		   $loggedin_user->id == $displayed_user->id) || 
+		   $bp->current_action == 'forum' ) {
 		
 		if ( !empty($activity->content) ) {
 			$mentioned = bp_activity_find_mentions($activity->content);
@@ -129,7 +132,7 @@ function bp_wall_input_filter( &$activity ) {
 
 		// if a user is on his own page it is an update
 		$new_action = sprintf( __( '%1$s wrote on %2$s Wall', 'bp-wall' ), $user_url, $displayed_user_url);
-		
+
 		//add a new notification if notifications component is active
 		if ( bp_is_active( 'notifications' ) ) {
 	        bp_notifications_add_notification( array(
@@ -144,7 +147,7 @@ function bp_wall_input_filter( &$activity ) {
 	    }
 	}
 	
-	if ( $new_action ) {
+	if ( isset($new_action) && !empty($new_action) ) {
 		bp_activity_update_meta( $activity->id, 'bp_wall_action', $new_action );
 	}
 }
