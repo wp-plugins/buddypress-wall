@@ -80,6 +80,10 @@ For bug reports or to add patches or translation files, visit the [Buddypress Wa
 
 
 == Changelog ==
+= 0.9.3 =
+* Fix empty activity title. 
+
+
 = 0.9.2 =
 * Work on Multisites Network.
 * Fix bug : notification tab not show on member page.
