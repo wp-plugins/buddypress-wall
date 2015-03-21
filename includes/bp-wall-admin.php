@@ -270,8 +270,3 @@ class BPWall_Admin {
 
   	}
 }  
-
-
-
-
-

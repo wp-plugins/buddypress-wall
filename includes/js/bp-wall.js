@@ -33,6 +33,7 @@ jQuery(document).ready(function(){
 
         var keyCode = (e.keyCode) ? e.keyCode : e.which;
 
+        console.log(keyCode);
         //if Shift+Enter keys was pressed
        if ( keyCode == 13 && e.shiftKey ) {
  			jq(element).val(jq(element).val() + "\n").trigger("autosize.resize");// use the right id heret
@@ -158,7 +159,8 @@ jQuery(document).ready(function(){
 	                        form.addClass('root');
 
 	                form.slideDown( 200 );
-	                jq.scrollTo( form, 500, { offset:-100, easing:'easeOutQuad' } );
+	                //jq.scrollTo( form, 500, { offset:-100, easing:'easeOutQuad' } );
+	                jq.scrollTo( form, 500, { offset:-100} );
 	                jq('#ac-form-' + ids[2] + ' textarea').focus();
 
 	                return false;

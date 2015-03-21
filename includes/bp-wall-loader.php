@@ -8,17 +8,6 @@
 // Exit if accessed directly
 if ( !defined( 'ABSPATH' ) ) exit;
 
-
-// textdomain loader
-$textdomain_local = BP_WALL_PLUGIN_DIR . '/languages/buddypress-wall-' . get_locale() . '.mo';
-if ( file_exists( $textdomain_local ) )
-	load_textdomain( 'bp-wall', $textdomain_local );
-else{
-	$textdomain_global = trailingslashit( WP_LANG_DIR ) . 'buddypress-wall-' . get_locale() . '.mo';
-	if( file_exists( $textdomain_global ) )
-	load_textdomain( 'bp-wall', $textdomain_global );
-}
-
 /**
  * BP_Wall Class
  */
@@ -380,4 +369,5 @@ function bp_wall_load_core() {
 	do_action('bp_wall_load_core');
 
 }
-add_action( 'bp_loaded', 'bp_wall_load_core', 5 );
+add_action( 'bp_init', 'bp_wall_load_core', 5 );
+//add_action( 'bp_loaded', 'bp_wall_load_core', 5 );

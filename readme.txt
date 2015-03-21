@@ -2,8 +2,8 @@
 Contributors: megainfo
 Tags: buddypress, activity, wall, facebook, facebook style, facebook comment system, wall mode, like, unlike
 Requires at least: WordPress 3.4, BuddyPress 1.5
-Tested up to: WordPress 3.9 / BuddyPress 2.0
-Stable tag: 0.9.3
+Tested up to: WordPress 3.4.2 / BuddyPress 2.2.1
+Stable tag: 0.9.4
 
 
 == Description ==
@@ -77,12 +77,15 @@ so you must replace the template content and keep the bp-wall script.
 Please post on the Wordpress support forum(http://wordpress.org/support/plugin/buddypress-wall).
 
 For bug reports or to add patches or translation files, visit the [Buddypress Wall Github page](https://github.com/dzmounir/buddypress-wall).
-
+	
 
 == Changelog ==
+= 0.9.4 =
+* Compatibility with Buddypress 2.2.x
+* Fix javascript error : jQuery.easing[this.easing] is not a function.* Fix Notice: bp_setup_current_user was called incorrectly.
+
 = 0.9.3 =
 * Fix empty activity title. 
-
 
 = 0.9.2 =
 * Work on Multisites Network.

@@ -39,3 +39,9 @@ Version 0.9.3 ( April 19, 2014 )
 --------------------------------------------------------------
 - Fix empty activity title. 
 
+Version 0.9.4 ( Mar 21, 2015 )
+--------------------------------------------------------------
+- Minor fix's for compatibity with Buddypress 2.2.x
+- Fix javascript error : jQuery.easing[this.easing] is not a function.
+- Fix Notice: bp_setup_current_user was called incorrectly.
+

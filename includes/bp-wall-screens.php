@@ -155,13 +155,10 @@ if ( class_exists( 'BP_Theme_Compat' ) ) {
          * Are we looking at something that needs theme compatability?
          */
         public function is_bp_plugin() {
-           
-                // first we reset the post
-                add_action( 'bp_template_include_reset_dummy_post_data', array( $this, 'directory_dummy_post' ) );
-                // then we filter ‘the_content’ thanks to bp_replace_the_content
-                add_filter( 'bp_replace_the_content', array( $this, 'directory_content'    ) );
-
-
+            // first we reset the post
+            add_action( 'bp_template_include_reset_dummy_post_data', array( $this, 'directory_dummy_post' ) );
+            // then we filter ‘the_content’ thanks to bp_replace_the_content
+            add_filter( 'bp_replace_the_content', array( $this, 'directory_content'    ) );
         }
 
         /**

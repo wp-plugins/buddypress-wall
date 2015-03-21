@@ -4,9 +4,9 @@ Plugin Name: BuddyPress Wall
 Plugin URI: 
 Description: Turn your Buddypress Activity Component to a Facebook-style Wall.
 Profiles with Facebook-style walls
-Version: 0.9.3
+Version: 0.9.4
 Requires at least:  WP 3.4, BuddyPress 1.5
-Tested up to: Wordpress 3.9 BuddyPress 2.0
+Tested up to: Wordpress 4.1.1 BuddyPress 2.2.1
 License: GNU General Public License 2.0 (GPL) http://www.gnu.org/licenses/gpl.html
 Author: Meg@Info
 Author URI: http://www.ibuddypress.net
@@ -17,7 +17,7 @@ Network: true
 if ( !defined( 'ABSPATH' ) ) exit;
 
 /*************************************************************************************************************
- --- BuddyPress Wall 0.9.3 ---
+ --- BuddyPress Wall 0.9.4 ---
  *************************************************************************************************************/
 
 // Define a constant that can be checked to see if the component is installed or not.
@@ -25,7 +25,7 @@ define( 'BP_WALL_IS_INSTALLED', 1 );
 
 // Define a constant that will hold the current version number of the component
 // This can be useful if you need to run update scripts or do compatibility checks in the future
-define( 'BP_WALL_VERSION', '0.9.3' );
+define( 'BP_WALL_VERSION', '0.9.4' );
 
 // Define a constant that we can use to construct file paths throughout the component
 define( 'BP_WALL_PLUGIN_DIR', dirname( __FILE__ ) );
@@ -41,6 +41,34 @@ define ( 'BP_WALL_DB_VERSION', '1.0' );
 // Define a constant that we can use as plugin basename
 define( 'BP_WALL_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
 
+define( 'BP_WALL_PLUGIN_DIR_PATH',  plugin_dir_path( __FILE__ ) );
+
+
+/**
+ * textdomain loader.
+ *
+ * Checks WP_LANG_DIR for the .mo file first, then the plugin's language folder.
+ * Allows for a custom language file other than those packaged with the plugin.
+ *
+ * @uses load_textdomain() Loads a .mo file into WP
+ * @uses load_plugin_textdomain() Loads a .mo file into languages folder on plugin
+ */ 
+function bp_wall_load_textdomain() {
+	$mofile		= sprintf( 'buddypress-wall-%s.mo', get_locale() );
+	
+	$mofile_global	= trailingslashit( WP_LANG_DIR ) . $mofile;
+	$mofile_local	= BP_WALL_PLUGIN_DIR_PATH . 'languages/' . $mofile;
+
+	if ( is_readable( $mofile_global ) ) {
+		return load_textdomain( 'bp-wall', $mofile_global );
+	} elseif ( is_readable( $mofile_local ) ){
+		//return load_plugin_textdomain( 'bp-activity-privacy', false, $mofile_local );
+		return load_textdomain( 'bp-wall', $mofile_local );
+	}
+	else
+		return false;
+}
+add_action( 'plugins_loaded', 'bp_wall_load_textdomain' );
 
 
 /**
@@ -126,14 +154,12 @@ add_action( 'bp_include', 'bp_wall_init' );
 
 /* Put setup procedures to be run when the plugin is activated in the following function */
 function bp_wall_activate() {
-	global $bp;
-
-	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-	if ( !is_plugin_active( 'buddypress/bp-loader.php' ) ) {
+	// check if buddypress is active
+	if ( ! defined( 'BP_VERSION' ) ) {
 		//deactivate_plugins( basename( __FILE__ ) ); // Deactivate this plugin
 		die( _e( 'You cannot enable BuddyPress Wall, <strong>BuddyPress</strong> is not active. Please install and activate BuddyPress before trying to activate Buddypress Wall.' , 'bp-wall' ) );
 	}	
-
+	
 	// Add the transient to redirect
 	set_transient( '_bp_wall_activation_redirect', true, 30 );
 	do_action( 'bp_wall_activation' );
@@ -156,7 +182,6 @@ function bp_wall_template_filter_init() {
 add_action('bp_init', 'bp_wall_template_filter_init');
  
 function bp_wall_template_part_filter( $templates, $slug, $name ) {
-	
 	if ( 'activity/index' == $slug  ) {
 		//return bp_buffer_template_part( 'activity/index-wall' );
 		$templates[0] = 'activity/index-wall.php';

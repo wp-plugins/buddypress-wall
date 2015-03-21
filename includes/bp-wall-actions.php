@@ -31,7 +31,6 @@ function bp_wall_actions(){
 		add_action( "wp_ajax_post_update", "bp_wall_ltheme_post_update" );
 
 	} else {
-
 		remove_action( 'wp_ajax_activity_widget_filter', 'bp_dtheme_activity_template_loader' );
 		remove_action( 'wp_ajax_activity_get_older_updates', 'bp_dtheme_activity_template_loader' );
 

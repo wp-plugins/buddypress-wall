@@ -29,6 +29,7 @@ function bp_wall_get_activity_action_pre_meta( $action, $activity, $args ){
 	return $action;
 
 }
+
 /**
  * filters wall actions
  *
@@ -158,19 +159,21 @@ function bp_wall_input_filter( &$activity ) {
  */ 
 function bp_wall_qs_filter( $query_string ) {
 	global $bp, $bp_wall;
-
 	$action = $bp->current_action;
-
 
 	// if we're on a different page than wall pass query_string as is
 	if ( $action != "just-me" &&  $action != "news-feed" ) {
 		return $query_string;
 	}
 
-	// if we have a page string in the query_string
-	$page_str  = preg_match("/page=\d+/", $query_string, $m);
-	// so grab the number
-	$page = intval(str_replace("page=", "", $m[0])); 
+	$page = 1;
+	if( !empty( $query_string) ) {
+		// if we have a page string in the query_string
+		$page_str  = preg_match("/page=\d+/", $query_string, $m);
+
+		// so grab the number
+		$page = intval(str_replace("page=", "", $m[0])); 
+	} 
 
 	// load the activities for this page
 	if ( $action == "just-me" )
@@ -182,7 +185,6 @@ function bp_wall_qs_filter( $query_string ) {
 	return $new_query_string;
 	
 }
-
 
 add_filter('bp_get_the_notification_description', 'bp_wall_get_the_notification_description');
 function bp_wall_get_the_notification_description( $description ){
@@ -205,5 +207,4 @@ function bp_wall_get_the_notification_description( $description ){
 	}
 	
 	return $description;
-
 }

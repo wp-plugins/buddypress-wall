@@ -52,8 +52,7 @@
 	
 	<p class="activity-greeting"><?php if ( bp_is_group() )
 		printf( __( "What's new in %s, %s?", 'buddypress' ), bp_get_group_name(), bp_get_user_firstname() );
-		
-		elseif( bp_is_my_profile() && bp_is_user_activity() )		
+		elseif( ( bp_is_my_profile() && bp_is_user_activity() ) )		
 		//elseif( bp_is_page( BP_ACTIVITY_SLUG ) || bp_is_my_profile() && bp_is_user_activity() )
 			printf( __( "What's new, %s?", 'buddypress' ), bp_get_user_firstname() );
 		elseif( !bp_is_my_profile() && bp_is_user_activity() )
